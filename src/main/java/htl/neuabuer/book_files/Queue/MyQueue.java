@@ -12,7 +12,7 @@ public class MyQueue<T> {
     }
 
     public void put(T value) throws FullException {
-        if (data.size() == maxSize) {
+        if (data.size() >= maxSize) {
             throw new FullException();
         }
         data.add(value);
@@ -22,6 +22,6 @@ public class MyQueue<T> {
         if (data.isEmpty()) {
             throw new EmptyException();
         }
-        return data.poll();
+        return data.remove(0);
     }
 }
