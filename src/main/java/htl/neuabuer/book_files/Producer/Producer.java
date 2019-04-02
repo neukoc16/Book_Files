@@ -20,21 +20,20 @@ public class Producer implements Runnable {
     public void run() {
         while (true) {
             JFileChooser jfc = new JFileChooser("./files");
+            String word = JOptionPane.showInputDialog("Enter word: ");
             int y = jfc.showOpenDialog(null);
             synchronized (books) {
-                if (y == JFileChooser.APPROVE_OPTION) {
-                    String word = JOptionPane.showInputDialog("Enter word: ");
-                    try {
+                try {
+                    if (y == JFileChooser.APPROVE_OPTION) {
                         books.put(new Book(jfc.getSelectedFile().getPath(), word));
-                    } catch (FullException ex) {
+                        books.notifyAll();
+                    }
+                } catch (FullException e) {
+                    try {
+                        books.wait();
+                    } catch (InterruptedException ex) {
                         Logger.getLogger(Producer.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    books.notifyAll();
-                }
-                try {
-                    books.wait();
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(Producer.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }

@@ -6,6 +6,7 @@ import htl.neuabuer.book_files.Queue.MyQueue;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 public class Consumer implements Runnable {
 
@@ -19,7 +20,7 @@ public class Consumer implements Runnable {
     @Override
     public void run() {
         while (true) {
-            Book book;
+            Book book = null;
             synchronized (books) {
                 try {
                     book = books.get();
@@ -33,10 +34,14 @@ public class Consumer implements Runnable {
                     continue;
                 }
             }
+
             hmap = book.countWords();
             int c;
             for (String string : hmap.keySet()) {
                 c = hmap.get(string);
+                if (c > 1) {
+                    System.out.println("yes");
+                }
             }
         }
     }
