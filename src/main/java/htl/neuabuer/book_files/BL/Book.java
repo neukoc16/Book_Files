@@ -6,19 +6,29 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Book {
 
     private final String inputfilename;
     private String text;
 
-    public Book(String inputfilename, String text) {
+    public Book(String inputfilename) {
         this.inputfilename = inputfilename;
-        this.text = text;
+        try {
+            load();
+        } catch (IOException ex) {
+            Logger.getLogger(Book.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public String getFile() {
+        return new File(inputfilename).getName();
     }
 
     public HashMap<String, Integer> countWords() {
-        String words[] = text.split(" ");
+        String words[] = text.split("[^a-zA-Z]+");
         HashMap<String, Integer> countWords = new HashMap<>();
 
         for (String word : words) {
@@ -28,18 +38,14 @@ public class Book {
                 countWords.put(word, 1);
             }
         }
-        for (String string : countWords.keySet()) {
-            if (countWords.get(string) == 1) {
-                countWords.remove(string);
-            }
-        }
+
         return countWords;
     }
 
     public void load() throws FileNotFoundException, IOException {
         BufferedReader br = new BufferedReader(new FileReader(new File(inputfilename)));
         while (br.ready()) {
-            text += br.readLine();
+            text += br.readLine() + " ";
         }
     }
 }

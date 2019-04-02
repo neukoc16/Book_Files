@@ -3,10 +3,12 @@ package htl.neuabuer.book_files.Consumer;
 import htl.neuabuer.book_files.BL.Book;
 import htl.neuabuer.book_files.Queue.EmptyException;
 import htl.neuabuer.book_files.Queue.MyQueue;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 
 public class Consumer implements Runnable {
 
@@ -36,12 +38,15 @@ public class Consumer implements Runnable {
             }
 
             hmap = book.countWords();
-            int c;
-            for (String string : hmap.keySet()) {
-                c = hmap.get(string);
-                if (c > 1) {
-                    System.out.println("yes");
+            try {
+                BufferedWriter bw = new BufferedWriter(new FileWriter("./output/" + book.getFile()));
+                for (String string : hmap.keySet()) {
+                    if (hmap.get(string) > 1) {
+                        bw.write(string + ": " + hmap.get(string) + "\n");
+                    }
                 }
+            } catch (IOException ex) {
+                Logger.getLogger(Consumer.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
